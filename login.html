@@ -3,152 +3,518 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | Licking Fingers</title>
+    <meta name="description" content="Licking Fingers African Cuisine - Authentic West African food delivery in Delaware. Jollof rice, fufu, suya, and more!">
+    <meta name="keywords" content="African food, West African cuisine, Delaware, Jollof rice, fufu, suya, food delivery">
+    <title>Licking Fingers African Cuisine | Order Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #16213e 100%);
             color: #fff;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        nav {
+            background: rgba(0,0,0,0.4);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ffd700;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: #ffd700; }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            background: rgba(255,215,0,0.1);
+            padding: 8px 16px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,215,0,0.3);
+            transition: all 0.3s;
+            list-style: none;
+        }
+
+        .cart-icon:hover {
+            background: rgba(255,215,0,0.2);
+            transform: scale(1.05);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            animation: bounce 0.5s;
         }
-        .login-container {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            padding: 50px;
-            border-radius: 25px;
-            border: 1px solid rgba(255,215,0,0.2);
-            width: 100%;
-            max-width: 420px;
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .hero {
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            padding: 10rem 2rem 5rem;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
         }
-        .logo { font-size: 3.5rem; margin-bottom: 10px; }
-        h1 { color: #ffd700; margin-bottom: 8px; font-size: 1.8rem; }
-        .tagline { color: #aaa; margin-bottom: 35px; font-size: 0.95rem; }
-        .form-group { margin-bottom: 22px; text-align: left; }
-        label { display: block; margin-bottom: 8px; color: #ffd700; font-weight: 600; font-size: 0.9rem; }
-        input {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid rgba(255,215,0,0.2);
-            border-radius: 12px;
-            background: rgba(0,0,0,0.3);
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(15,15,35,0.8) 100%);
+        }
+
+        .hero-content { position: relative; z-index: 1; }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: #ffd700;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,255,136,0.15);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            padding: 8px 20px;
+            border-radius: 25px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #00ff88;
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px #00ff88; }
+            50% { opacity: 0.5; box-shadow: 0 0 20px #00ff88; }
+        }
+
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 24px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.2);
             color: #fff;
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif;
+            border-radius: 25px;
+            cursor: pointer;
             transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
         }
-        input:focus { outline: none; border-color: #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.2); }
-        .login-btn {
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(255,215,0,0.2);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .menu-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.1);
+            position: relative;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            border-color: rgba(255,215,0,0.3);
+        }
+
+        .menu-item .item-image-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+        }
+
+        .menu-item img {
             width: 100%;
-            padding: 18px;
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .menu-item:hover img { transform: scale(1.1); }
+
+        .menu-item .category-tag {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255,215,0,0.9);
+            color: #1a1a2e;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .menu-content { padding: 1.5rem; }
+
+        .menu-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #ffd700;
+        }
+
+        .menu-item p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
             color: #1a1a2e;
             border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 700;
+            padding: 10px 24px;
+            border-radius: 25px;
             cursor: pointer;
-            margin-top: 10px;
+            font-weight: 600;
             transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-family: 'Poppins', sans-serif;
         }
-        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,215,0,0.3); }
-        .back-link {
-            display: inline-block;
-            margin-top: 25px;
-            color: #aaa;
-            text-decoration: none;
-            transition: color 0.3s;
-            font-size: 0.9rem;
+
+        .add-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
         }
-        .back-link:hover { color: #ffd700; }
+
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(0,0,0,0.3);
+            border-top: 1px solid rgba(255,215,0,0.1);
+        }
+
+        .footer p { opacity: 0.7; font-size: 0.9rem; }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
         .error-message {
-            background: rgba(255,0,0,0.15);
-            border: 1px solid #ff4444;
-            color: #ff6666;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: none;
-            font-size: 0.9rem;
+            text-align: center;
+            padding: 60px;
+            color: #ff4444;
         }
-        .secure-badge {
-            margin-top: 25px;
-            padding: 12px;
-            background: rgba(0,255,136,0.1);
-            border-radius: 10px;
-            font-size: 0.85rem;
-            color: #00ff88;
-            border: 1px solid rgba(0,255,136,0.2);
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .nav-links { gap: 1rem; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .section-title { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo">👅</div>
-        <h1>Licking Fingers</h1>
-        <p class="tagline">Staff Only - Authorized Access</p>
-        
-        <div class="error-message" id="errorMessage"></div>
 
-        <form id="loginForm" onsubmit="return false;">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" placeholder="Enter staff username" required autocomplete="username">
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">👅 Licking Fingers</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Menu</a></li>
+                <li><a href="track-order.html">Track Order</a></li>
+                <li class="cart-icon" onclick="window.location.href='cart.html'">
+                    🛒 <span id="cart-count" class="cart-count">0</span>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>So Good You'll Lick Your Fingers!</h1>
+            <p>Authentic West African Cuisine Delivered to Your Door</p>
+            <div class="hero-badge">
+                <span class="live-dot"></span>
+                Now Accepting Orders
             </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter staff password" required autocomplete="current-password">
+        </div>
+    </section>
+
+    <section class="menu-section">
+        <div class="section-header">
+            <h2 class="section-title">Our Menu</h2>
+            <div class="live-indicator">
+                <span class="live-dot"></span>
+                Live Menu - Updated Daily
             </div>
-            <button class="login-btn" onclick="login()">Login to Dashboard</button>
-        </form>
+        </div>
 
-        <a href="index.html" class="back-link">← Back to Customer Site</a>
+        <div class="category-filter">
+            <button class="filter-btn active" onclick="filterMenu('all')">All</button>
+            <button class="filter-btn" onclick="filterMenu('Main')">Main Dishes</button>
+            <button class="filter-btn" onclick="filterMenu('Appetizer')">Appetizers</button>
+            <button class="filter-btn" onclick="filterMenu('Drink')">Drinks</button>
+        </div>
 
-        <div class="secure-badge">🔒 Secure Staff Portal</div>
-    </div>
+        <div id="menu-container" class="menu-grid">
+            <div class="loading-spinner">Loading menu...</div>
+        </div>
+    </section>
 
+    <footer class="footer">
+        <p>© 2026 Licking Fingers African Cuisine | 1137 King James Court, Bear, DE 19701</p>
+        <p style="margin-top: 8px; font-size: 0.8rem;">📞 (240) 855-5478 | Authentic West African Food</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/cart.js"></script>
     <script>
-        const ADMIN_USERNAME = 'admin';
-        const ADMIN_PASSWORD = 'admin123';
+        // ============================================
+        // LICKING FINGERS - CUSTOMER MENU
+        // ============================================
 
-        function login() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const errorDiv = document.getElementById('errorMessage');
-
-            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                sessionStorage.setItem('adminLoginTime', Date.now());
-                window.location.href = 'admin.html';
-            } else {
-                errorDiv.textContent = 'Invalid credentials. Staff access only.';
-                errorDiv.style.display = 'block';
-                document.getElementById('password').value = '';
-            }
-        }
-
-        document.getElementById('password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') login();
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for Supabase client to be ready
+            const checkSupabase = setInterval(() => {
+                if (window.supabaseClient && typeof window.supabaseClient.from === 'function') {
+                    clearInterval(checkSupabase);
+                    loadMenu();
+                    updateCartCount();
+                }
+            }, 100);
+            
+            // Timeout after 5 seconds
+            setTimeout(() => {
+                clearInterval(checkSupabase);
+                const container = document.getElementById('menu-container');
+                if (container && container.innerHTML.includes('Loading')) {
+                    container.innerHTML = '<div class="error-message">Failed to load menu. Please refresh.</div>';
+                }
+            }, 5000);
         });
 
-        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-            const loginTime = parseInt(sessionStorage.getItem('adminLoginTime') || 0);
-            if (Date.now() - loginTime < 2 * 60 * 60 * 1000) {
-                window.location.href = 'admin.html';
-            } else {
-                sessionStorage.removeItem('adminLoggedIn');
-                sessionStorage.removeItem('adminLoginTime');
+        async function loadMenu() {
+            const container = document.getElementById('menu-container');
+            if (!container) return;
+
+            const client = window.supabaseClient;
+            if (!client || typeof client.from !== 'function') {
+                console.error('Supabase client not ready');
+                container.innerHTML = '<div class="error-message">Connection error. Please refresh.</div>';
+                return;
+            }
+
+            container.innerHTML = '<div class="loading-spinner">Loading menu...</div>';
+
+            try {
+                const { data: items, error } = await client
+                    .from('menu_items')
+                    .select('*')
+                    .eq('available', true)
+                    .order('category', { ascending: true })
+                    .order('name', { ascending: true });
+
+                if (error) throw error;
+
+                if (!items || items.length === 0) {
+                    container.innerHTML = '<div class="loading-spinner">Menu coming soon!</div>';
+                    return;
+                }
+
+                container.innerHTML = items.map(item => {
+                    let imageUrl = 'assets/placeholder-food.jpg';
+                    if (item.image_path) {
+                        if (item.image_path.startsWith('http')) {
+                            imageUrl = item.image_path;
+                        } else {
+                            const { data } = client.storage
+                                .from('menu-images')
+                                .getPublicUrl(item.image_path);
+                            imageUrl = data.publicUrl;
+                        }
+                    }
+
+                    return `
+                    <div class="menu-item" data-id="${item.id}" data-category="${item.category || 'Main'}">
+                        <div class="item-image-wrapper">
+                            <img src="${imageUrl}" alt="${item.name}" loading="lazy" onerror="this.src='assets/placeholder-food.jpg'">
+                            <span class="category-tag">${item.category || 'Main'}</span>
+                        </div>
+                        <div class="menu-content">
+                            <h3>${item.name}</h3>
+                            <p>${item.description || ''}</p>
+                            <div class="item-footer">
+                                <span class="price">$${parseFloat(item.price).toFixed(2)}</span>
+                                <button onclick="addToCart(${item.id})" class="add-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Error loading menu:', err);
+                container.innerHTML = '<div class="error-message">Error loading menu. Please refresh.</div>';
             }
         }
+
+        function filterMenu(category) {
+            const items = document.querySelectorAll('.menu-item');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            items.forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
     </script>
+
 </body>
 </html>
