@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Management - Licking Fingers</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <img src="assets/logo.png" alt="Licking Fingers" class="sidebar-logo">
+            <h3>Admin Panel</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="admin.html" class="nav-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-menu.html" class="nav-item active">
+                <i class="fas fa-utensils"></i>
+                <span>Menu</span>
+            </a>
+            <a href="admin-orders.html" class="nav-item">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Orders</span>
+            </a>
+            <a href="index.html" class="nav-item" target="_blank">
+                <i class="fas fa-external-link-alt"></i>
+                <span>View Site</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button id="logoutBtn" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1>Menu Management</h1>
+            <div class="admin-user">
+                <span id="adminName">Admin</span>
+                <i class="fas fa-user-circle"></i>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- Add New Item Section -->
+            <section class="menu-form-section">
+                <h2><i class="fas fa-plus-circle"></i> Add New Menu Item</h2>
+                <form id="menuForm" class="menu-form">
+                    <input type="hidden" id="itemId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="itemName">Item Name *</label>
+                            <input type="text" id="itemName" required placeholder="e.g., Jollof Rice & Chicken">
+                        </div>
+                        <div class="form-group">
+                            <label for="itemPrice">Price ($) *</label>
+                            <input type="number" id="itemPrice" step="0.01" min="0" required placeholder="16.99">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="itemCategory">Category *</label>
+                            <select id="itemCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="main">Main Dishes</option>
+                                <option value="sides">Sides</option>
+                                <option value="soups">Soups & Stews</option>
+                                <option value="drinks">Drinks</option>
+                                <option value="specials">Specials</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="itemAvailable">Availability</label>
+                            <select id="itemAvailable">
+                                <option value="true">Available</option>
+                                <option value="false">Out of Stock</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemDescription">Description *</label>
+                        <textarea id="itemDescription" rows="3" required placeholder="Describe the dish..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemImage">Food Image</label>
+                        <div class="image-upload-area" id="imageUploadArea">
+                            <input type="file" id="itemImage" accept="image/*" hidden>
+                            <div class="upload-placeholder" id="uploadPlaceholder">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Click to upload or drag image here</p>
+                                <small>Recommended: 800x600px, max 5MB</small>
+                            </div>
+                            <img id="imagePreview" class="image-preview" style="display:none;">
+                            <button type="button" id="removeImage" class="btn-remove-image" style="display:none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="cancelEdit" class="btn btn-secondary" style="display:none;">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> <span id="submitBtnText">Add Item</span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Menu Items List -->
+            <section class="menu-list-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-list"></i> Current Menu Items</h2>
+                    <div class="filter-controls">
+                        <select id="filterCategory">
+                            <option value="">All Categories</option>
+                            <option value="main">Main Dishes</option>
+                            <option value="sides">Sides</option>
+                            <option value="soups">Soups & Stews</option>
+                            <option value="drinks">Drinks</option>
+                            <option value="specials">Specials</option>
+                        </select>
+                        <input type="text" id="searchItems" placeholder="Search items...">
+                    </div>
+                </div>
+                <div id="menuItemsList" class="menu-items-grid">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading menu items...</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Delete Menu Item</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="deleteItemName"></strong>?</p>
+                <p class="text-muted">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="js/supabase-config.js"></script>
+    <script>
+        // Admin authentication check
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Load admin name
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                document.getElementById('adminName').textContent = user.email.split('@')[0];
+            }
+            
+            loadMenuItems();
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        });
+
+        // Image upload handling
+        const imageUploadArea = document.getElementById('imageUploadArea');
+        const itemImageInput = document.getElementById('itemImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        const removeImageBtn = document.getElementById('removeImage');
+
+        imageUploadArea.addEventListener('click', () => itemImageInput.click());
+        
+        imageUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            imageUploadArea.classList.add('dragover');
+        });
+        
+        imageUploadArea.addEventListener('dragleave', () => {
+            imageUploadArea.classList.remove('dragover');
+        });
+        
+        imageUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            imageUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) handleImageSelect(files[0]);
+        });
+
+        itemImageInput.addEventListener('change', (e) => {
+            if (e.target.files.length) handleImageSelect(e.target.files[0]);
+        });
+
+        function handleImageSelect(file) {
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Image must be less than 5MB', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                uploadPlaceholder.style.display = 'none';
+                removeImageBtn.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        removeImageBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            itemImageInput.value = '';
+            imagePreview.style.display = 'none';
+            uploadPlaceholder.style.display = 'block';
+            removeImageBtn.style.display = 'none';
+        });
+
+        // Form handling
+        let editingItemId = null;
+        let deleteItemId = null;
+
+        document.getElementById('menuForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('itemName').value.trim();
+            const price = parseFloat(document.getElementById('itemPrice').value);
+            const category = document.getElementById('itemCategory').value;
+            const available = document.getElementById('itemAvailable').value === 'true';
+            const description = document.getElementById('itemDescription').value.trim();
+            const imageFile = itemImageInput.files[0];
+
+            if (!name || !price || !category || !description) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+
+            try {
+                let imageUrl = null;
+                
+                // Upload image if provided
+                if (imageFile) {
+                    const fileExt = imageFile.name.split('.').pop();
+                    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+                    
+                    const { error: uploadError } = await supabase.storage
+                        .from('menu-images')
+                        .upload(fileName, imageFile);
+                    
+                    if (uploadError) throw uploadError;
+                    
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('menu-images')
+                        .getPublicUrl(fileName);
+                    
+                    imageUrl = publicUrl;
+                }
+
+                const itemData = {
+                    name,
+                    price,
+                    category,
+                    available,
+                    description,
+                    image_url: imageUrl
+                };
+
+                if (editingItemId) {
+                    // Update existing item
+                    if (!imageUrl) {
+                        // Keep existing image if not changed
+                        delete itemData.image_url;
+                    }
+                    
+                    const { error } = await supabase
+                        .from('menu_items')
+                        .update(itemData)
+                        .eq('id', editingItemId);
+                    
+                    if (error) throw error;
+                    showToast('Menu item updated successfully!', 'success');
+                } else {
+                    // Add new item
+                    const { error } = await supabase
+                        .from('menu_items')
+                        .insert([itemData]);
+                    
+                    if (error) throw error;
+                    showToast('Menu item added successfully!', 'success');
+                }
+
+                resetForm();
+                loadMenuItems();
+            } catch (error) {
+                console.error('Error saving menu item:', error);
+                showToast('Error saving menu item: ' + error.message, 'error');
+            }
+        });
+
+        document.getElementById('cancelEdit').addEventListener('click', resetForm);
+
+        function resetForm() {
+            document.getElementById('menuForm').reset();
+            editingItemId = null;
+            document.getElementById('submitBtnText').textContent = 'Add Item';
+            document.getElementById('cancelEdit').style.display = 'none';
+            itemImageInput.value = '';
+            imagePreview.style.display = 'none';
+            uploadPlaceholder.style.display = 'block';
+            removeImageBtn.style.display = 'none';
+        }
+
+        // Load menu items
+        async function loadMenuItems() {
+            const container = document.getElementById('menuItemsList');
+            container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i><p>Loading menu items...</p></div>';
+
+            try {
+                const { data: items, error } = await supabase
+                    .from('menu_items')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!items || items.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-utensils"></i><p>No menu items yet. Add your first item above!</p></div>';
+                    return;
+                }
+
+                renderMenuItems(items);
+            } catch (error) {
+                console.error('Error loading menu items:', error);
+                container.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><p>Error loading menu items</p></div>';
+            }
+        }
+
+        function renderMenuItems(items) {
+            const container = document.getElementById('menuItemsList');
+            const filterCategory = document.getElementById('filterCategory').value;
+            const searchTerm = document.getElementById('searchItems').value.toLowerCase();
+
+            let filteredItems = items;
+            if (filterCategory) {
+                filteredItems = filteredItems.filter(item => item.category === filterCategory);
+            }
+            if (searchTerm) {
+                filteredItems = filteredItems.filter(item => 
+                    item.name.toLowerCase().includes(searchTerm) ||
+                    item.description.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (filteredItems.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>No items match your criteria</p></div>';
+                return;
+            }
+
+            container.innerHTML = filteredItems.map(item => `
+                <div class="menu-item-card ${!item.available ? 'out-of-stock' : ''}">
+                    <div class="item-image">
+                        <img src="${item.image_url || 'assets/placeholder-food.jpg'}" alt="${item.name}" onerror="this.src='assets/placeholder-food.jpg'">
+                        ${!item.available ? '<span class="stock-badge">Out of Stock</span>' : ''}
+                    </div>
+                    <div class="item-details">
+                        <div class="item-header">
+                            <h4>${item.name}</h4>
+                            <span class="item-price">$${parseFloat(item.price).toFixed(2)}</span>
+                        </div>
+                        <p class="item-category"><i class="fas fa-tag"></i> ${formatCategory(item.category)}</p>
+                        <p class="item-description">${item.description}</p>
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-edit" onclick="editItem('${item.id}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-delete" onclick="confirmDelete('${item.id}', '${item.name}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function formatCategory(category) {
+            const categories = {
+                'main': 'Main Dishes',
+                'sides': 'Sides',
+                'soups': 'Soups & Stews',
+                'drinks': 'Drinks',
+                'specials': 'Specials'
+            };
+            return categories[category] || category;
+        }
+
+        // Edit item
+        async function editItem(id) {
+            try {
+                const { data: item, error } = await supabase
+                    .from('menu_items')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+
+                document.getElementById('itemId').value = item.id;
+                document.getElementById('itemName').value = item.name;
+                document.getElementById('itemPrice').value = item.price;
+                document.getElementById('itemCategory').value = item.category;
+                document.getElementById('itemAvailable').value = item.available ? 'true' : 'false';
+                document.getElementById('itemDescription').value = item.description;
+
+                if (item.image_url) {
+                    imagePreview.src = item.image_url;
+                    imagePreview.style.display = 'block';
+                    uploadPlaceholder.style.display = 'none';
+                    removeImageBtn.style.display = 'flex';
+                }
+
+                editingItemId = id;
+                document.getElementById('submitBtnText').textContent = 'Update Item';
+                document.getElementById('cancelEdit').style.display = 'inline-flex';
+                
+                // Scroll to form
+                document.querySelector('.menu-form-section').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error('Error loading item for edit:', error);
+                showToast('Error loading item details', 'error');
+            }
+        }
+
+        // Delete functionality
+        function confirmDelete(id, name) {
+            deleteItemId = id;
+            document.getElementById('deleteItemName').textContent = name;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            deleteItemId = null;
+        }
+
+        document.getElementById('confirmDelete').addEventListener('click', async () => {
+            if (!deleteItemId) return;
+
+            try {
+                const { error } = await supabase
+                    .from('menu_items')
+                    .delete()
+                    .eq('id', deleteItemId);
+
+                if (error) throw error;
+
+                showToast('Menu item deleted successfully!', 'success');
+                closeDeleteModal();
+                loadMenuItems();
+            } catch (error) {
+                console.error('Error deleting item:', error);
+                showToast('Error deleting item: ' + error.message, 'error');
+            }
+        });
+
+        // Filter and search
+        document.getElementById('filterCategory').addEventListener('change', () => loadMenuItems());
+        document.getElementById('searchItems').addEventListener('input', debounce(() => loadMenuItems(), 300));
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Close modal on outside click
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('deleteModal');
+            if (e.target === modal) closeDeleteModal();
+        });
+    </script>
+</body>
+</html>

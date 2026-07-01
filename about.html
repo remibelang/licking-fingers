@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Licking Fingers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8B4513;
+            --primary-light: #A0522D;
+            --primary-dark: #5D2E0C;
+            --secondary: #D4AF37;
+            --accent: #228B22;
+            --accent-red: #8B0000;
+            --text: #333333;
+            --text-light: #666666;
+            --bg: #FFFFFF;
+            --bg-light: #FDF8F3;
+            --bg-dark: #F5EDE4;
+            --border: #E8DDD0;
+            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --radius-lg: 20px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; color: var(--text); background: var(--bg); line-height: 1.6; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        
+        .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,0.97); backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 0; }
+        .navbar .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
+        .logo { display: flex; align-items: center; gap: 10px; font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .logo i { color: var(--secondary); }
+        .nav-menu { display: flex; list-style: none; gap: 30px; }
+        .nav-menu a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.95rem; position: relative; padding: 5px 0; transition: color 0.3s; }
+        .nav-menu a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--primary); transition: width 0.3s; }
+        .nav-menu a:hover::after, .nav-menu a.active::after { width: 100%; }
+        .nav-menu a:hover { color: var(--primary); }
+        .nav-menu a.active { color: var(--primary); }
+        .nav-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--primary); }
+        .cart-icon { position: relative; text-decoration: none; color: var(--text); font-size: 1.2rem; }
+        .cart-count { position: absolute; top: -8px; right: -10px; background: var(--accent-red); color: white; font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+        
+        .page-header { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%); color: white; padding: 140px 0 80px; text-align: center; position: relative; overflow: hidden; }
+        .page-header::before { content: ''; position: absolute; inset: 0; background: url('https://www.transparenttextures.com/patterns/food.png'); opacity: 0.1; }
+        .page-header h1 { font-size: 3rem; margin-bottom: 15px; position: relative; }
+        .page-header p { font-size: 1.15rem; opacity: 0.9; max-width: 600px; margin: 0 auto; position: relative; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Story Section */
+        .story-section { padding: 80px 0; background: var(--bg-light); }
+        .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .story-image { position: relative; }
+        .story-image img { width: 100%; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+        .story-image::before { content: ''; position: absolute; top: -20px; left: -20px; width: 100%; height: 100%; border: 3px solid var(--secondary); border-radius: var(--radius-lg); z-index: -1; }
+        .story-content h2 { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
+        .story-content p { color: var(--text-light); margin-bottom: 20px; font-size: 1.05rem; line-height: 1.8; }
+        .story-content .highlight { color: var(--primary); font-weight: 600; }
+        
+        /* Values */
+        .values-section { padding: 80px 0; background: white; }
+        .section-title { text-align: center; font-size: 2.5rem; color: var(--primary); margin-bottom: 15px; }
+        .section-subtitle { text-align: center; color: var(--text-light); margin-bottom: 50px; font-size: 1.1rem; }
+        .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .value-card { text-align: center; padding: 40px 30px; background: var(--bg-light); border-radius: var(--radius-lg); transition: all 0.3s; border: 2px solid transparent; }
+        .value-card:hover { transform: translateY(-8px); border-color: var(--secondary); box-shadow: var(--shadow-lg); }
+        .value-icon { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 1.5rem; }
+        .value-card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.3rem; }
+        .value-card p { color: var(--text-light); font-size: 0.95rem; line-height: 1.6; }
+        
+        /* Stats */
+        .stats-section { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 80px 0; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; text-align: center; }
+        .stat-item h3 { font-size: 3rem; color: var(--secondary); margin-bottom: 10px; font-family: 'Playfair Display', serif; }
+        .stat-item p { font-size: 1.1rem; opacity: 0.9; }
+        
+        /* Team */
+        .team-section { padding: 80px 0; background: var(--bg-light); }
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .team-card { background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); transition: all 0.3s; text-align: center; }
+        .team-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+        .team-img { height: 280px; background: linear-gradient(135deg, var(--bg-dark), var(--border)); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 4rem; }
+        .team-info { padding: 25px; }
+        .team-info h4 { color: var(--primary); font-size: 1.2rem; margin-bottom: 5px; }
+        .team-info p { color: var(--secondary); font-weight: 600; font-size: 0.9rem; margin-bottom: 10px; }
+        .team-info small { color: var(--text-light); font-size: 0.9rem; }
+        
+        /* CTA */
+        .cta-section { padding: 100px 0; background: linear-gradient(135deg, rgba(139,69,19,0.95), rgba(93,46,12,0.95)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920') center/cover; background-attachment: fixed; color: white; text-align: center; }
+        .cta-section h2 { font-size: 2.5rem; margin-bottom: 20px; }
+        .cta-section p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .btn-white { display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; background: white; color: var(--primary); border-radius: var(--radius); font-weight: 600; text-decoration: none; transition: all 0.3s; }
+        .btn-white:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        
+        /* Footer */
+        .footer { background: var(--primary-dark); color: white; padding: 50px 0 20px; }
+        .footer-content { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-brand h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 15px; color: var(--secondary); }
+        .footer-brand p { opacity: 0.8; line-height: 1.7; font-size: 0.95rem; }
+        .footer-links h4 { color: var(--secondary); margin-bottom: 20px; font-size: 1.1rem; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a { color: white; opacity: 0.8; text-decoration: none; transition: all 0.3s; font-size: 0.95rem; }
+        .footer-links a:hover { opacity: 1; color: var(--secondary); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; opacity: 0.7; }
+        
+        @media (max-width: 992px) {
+            .story-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-content { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .nav-toggle { display: block; }
+            .nav-menu { position: fixed; top: 70px; left: 0; right: 0; background: white; flex-direction: column; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); transform: translateY(-150%); transition: transform 0.3s; }
+            .nav-menu.active { transform: translateY(0); }
+            .page-header h1 { font-size: 2.2rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo"><i class="fas fa-utensils"></i> Licking Fingers</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html" class="active">About</a></li>
+                <li><a href="index.html#menu">Menu</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="booking.html">Book Table</a></li>
+            </ul>
+            <div style="display:flex;align-items:center;gap:20px;">
+                <a href="cart.html" class="cart-icon"><i class="fas fa-shopping-bag"></i><span class="cart-count" id="cartCount">0</span></a>
+                <button class="nav-toggle" id="navToggle"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Our Story</h1>
+        <p>From the heart of West Africa to your plate in Delaware. A journey of flavor, tradition, and passion.</p>
+    </header>
+
+    <section class="story-section">
+        <div class="container">
+            <div class="story-grid">
+                <div class="story-image">
+                    <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800" alt="Licking Fingers Kitchen">
+                </div>
+                <div class="story-content">
+                    <h2>A Taste of Home, Away From Home</h2>
+                    <p>Licking Fingers was born from a simple dream: to share the rich, vibrant flavors of <span class="highlight">West African cuisine</span> with the community of Bear, Delaware. What started as small family gatherings has grown into a beloved local restaurant.</p>
+                    <p>Our recipes have been passed down through generations, from the bustling markets of Lagos to the coastal kitchens of Accra. Every dish tells a story — of spice, of tradition, of love.</p>
+                    <p>We believe that food is more than sustenance. It's connection. It's culture. It's the sound of laughter around a table, the warmth of a shared meal, and the joy of discovering something delicious.</p>
+                    <p style="margin-top: 30px;"><a href="index.html#menu" class="btn-white" style="background: var(--primary); color: white;"><i class="fas fa-utensils"></i> Explore Our Menu</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="values-section">
+        <div class="container">
+            <h2 class="section-title">Our Values</h2>
+            <p class="section-subtitle">The principles that guide everything we do in our kitchen</p>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-heart"></i></div>
+                    <h3>Made With Love</h3>
+                    <p>Every dish is prepared with the same care and attention as if we were cooking for our own family. No shortcuts, no compromises.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-leaf"></i></div>
+                    <h3>Fresh Ingredients</h3>
+                    <p>We source the freshest local produce and authentic West African spices to ensure every bite bursts with natural flavor.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-users"></i></div>
+                    <h3>Community First</h3>
+                    <p>We're proud to be part of the Bear community. Your support fuels our passion, and we give back whenever we can.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-star"></i></div>
+                    <h3>Authentic Recipes</h3>
+                    <p>Our chefs bring decades of experience in traditional West African cooking, preserving the true taste of home.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item"><h3 data-count="10">0</h3><p>Years of Experience</p></div>
+                <div class="stat-item"><h3 data-count="50">0</h3><p>Unique Dishes</p></div>
+                <div class="stat-item"><h3 data-count="5000">0</h3><p>Happy Customers</p></div>
+                <div class="stat-item"><h3 data-count="15">0</h3><p>Team Members</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <div class="container">
+            <h2 class="section-title">Meet The Team</h2>
+            <p class="section-subtitle">The talented people behind your favorite meals</p>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-img"><i class="fas fa-user-chef"></i></div>
+                    <div class="team-info">
+                        <h4>Chef Nadia</h4>
+                        <p>Head Chef</p>
+                        <small>Master of traditional West African flavors with 15+ years of culinary expertise.</small>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-img"><i class="fas fa-user"></i></div>
+                    <div class="team-info">
+                        <h4>Remi Belang</h4>
+                        <p>Founder & Manager</p>
+                        <small>The visionary behind Licking Fingers, bringing authentic taste to Delaware.</small>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-img"><i class="fas fa-user"></i></div>
+                    <div class="team-info">
+                        <h4>Chef Ibrahim</h4>
+                        <p>Sous Chef</p>
+                        <small>Specialist in grilled meats and rich, aromatic stews that keep you coming back.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Hungry Yet?</h2>
+            <p>Experience the true taste of West Africa. Order online for delivery, book a table, or stop by for takeout.</p>
+            <a href="index.html#menu" class="btn-white"><i class="fas fa-shopping-bag"></i> Order Now</a>
+            <a href="booking.html" class="btn-white" style="margin-left: 15px; background: transparent; color: white; border: 2px solid white;"><i class="fas fa-calendar-alt"></i> Book a Table</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-utensils"></i> Licking Fingers</h3>
+                    <p>Authentic West African cuisine delivered with love. Taste the tradition, savor the flavor.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="index.html#menu">Our Menu</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="booking.html">Table Booking</a></li>
+                        <li><a href="index.html#menu">Online Ordering</a></li>
+                        <li><a href="contact.html">Catering</a></li>
+                        <li><a href="#">Private Events</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="tel:+12408555478">(240) 855-5478</a></li>
+                        <li><a href="mailto:info@lickingfingers.com">info@lickingfingers.com</a></li>
+                        <li>1137 King James Ct<br>Bear, DE 19701</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Licking Fingers. All rights reserved.</p>
+                <a href="admin-login.html" style="color:white;opacity:0.4;font-size:0.8rem;">Admin</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navMenu').classList.toggle('active');
+        });
+
+        // Animated counters
+        const counters = document.querySelectorAll('[data-count]');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.getAttribute('data-count'));
+                    let count = 0;
+                    const increment = target / 50;
+                    const timer = setInterval(() => {
+                        count += increment;
+                        if (count >= target) {
+                            entry.target.textContent = target.toLocaleString() + '+';
+                            clearInterval(timer);
+                        } else {
+                            entry.target.textContent = Math.floor(count).toLocaleString();
+                        }
+                    }, 30);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        counters.forEach(c => observer.observe(c));
+
+        updateCartCount();
+    </script>
+</body>
+</html>

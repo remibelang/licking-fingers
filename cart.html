@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | Licking Fingers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        header {
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+        }
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            color: #ffd700;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        .nav-links a:hover { color: #ffd700; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #ffd700;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        .cart-container {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,215,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            gap: 20px;
+            transition: all 0.3s;
+        }
+        .cart-item:hover {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+        }
+        .cart-item:last-child { border-bottom: none; }
+        .item-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid #ffd700;
+        }
+        .item-details { flex: 1; }
+        .item-details h3 { color: #ffd700; margin-bottom: 5px; }
+        .item-details p { color: #aaa; }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 5px;
+            border-radius: 25px;
+        }
+        .qty-btn {
+            background: #ffd700;
+            color: #1a1a2e;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+        .qty-btn:hover { transform: scale(1.1); }
+        .item-price {
+            font-size: 1.3rem;
+            color: #00ff88;
+            font-weight: 700;
+            min-width: 100px;
+            text-align: right;
+        }
+        .remove-btn {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .remove-btn:hover { background: #ff4444; color: #fff; }
+        .cart-summary {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ffd700;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        .summary-row.total {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #ffd700;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 15px;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .empty-cart h2 { color: #ffd700; margin-bottom: 20px; }
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #ffd700;
+            color: #1a1a2e;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+        .continue-shopping:hover { transform: scale(1.05); }
+        @media (max-width: 768px) {
+            .cart-item { flex-wrap: wrap; }
+            .item-price { width: 100%; text-align: left; margin-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">👅 Licking Fingers</a>
+            <div class="nav-links">
+                <a href="index.html">Menu</a>
+                <a href="track-order.html">Track Order</a>
+                <a href="login.html">Admin</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Your Shopping Cart</h1>
+        <div class="cart-container" id="cartContainer">
+            <div class="loading">Loading cart...</div>
+        </div>
+    </div>
+
+    <script>
+        function getCart() { return JSON.parse(localStorage.getItem('cart')) || []; }
+        function saveCart(cart) { localStorage.setItem('cart', JSON.stringify(cart)); }
+
+        function renderCart() {
+            const container = document.getElementById('cartContainer');
+            const cart = getCart();
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart">
+                        <h2>Your cart is empty</h2>
+                        <p>Add some delicious African cuisine to get started!</p>
+                        <a href="index.html" class="continue-shopping">Continue Shopping</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                html += `
+                    <div class="cart-item">
+                        <img src="${item.image || 'https://via.placeholder.com/100x100/1a1a3e/ffd700?text=🍽️'}" 
+                             alt="${item.name}" class="item-image"
+                             onerror="this.src='https://via.placeholder.com/100x100/1a1a3e/ffd700?text=🍽️'">
+                        <div class="item-details">
+                            <h3>${item.name}</h3>
+                            <p>$${item.price.toFixed(2)} each</p>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" onclick="updateQuantity(${index}, ${item.quantity - 1})">−</button>
+                            <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQuantity(${index}, ${item.quantity + 1})">+</button>
+                        </div>
+                        <div class="item-price">$${itemTotal.toFixed(2)}</div>
+                        <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+                    </div>
+                `;
+            });
+
+            const tax = subtotal * 0.08;
+            const delivery = 5.00;
+            const total = subtotal + tax + delivery;
+
+            html += `
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>$${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (8%)</span>
+                        <span>$${tax.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery</span>
+                        <span>$${delivery.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span>$${total.toFixed(2)}</span>
+                    </div>
+                    <button class="checkout-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function updateQuantity(index, newQuantity) {
+            let cart = getCart();
+            if (newQuantity < 1) { cart.splice(index, 1); }
+            else { cart[index].quantity = newQuantity; }
+            saveCart(cart);
+            renderCart();
+        }
+
+        function removeItem(index) {
+            let cart = getCart();
+            cart.splice(index, 1);
+            saveCart(cart);
+            renderCart();
+        }
+
+        function proceedToCheckout() {
+            window.location.href = 'checkout.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', renderCart);
+    </script>
+</body>
+</html>

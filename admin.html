@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Licking Fingers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        header {
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+        }
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            color: #ffd700;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { color: #fff; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: #ffd700; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+        h1 { text-align: center; color: #ffd700; margin-bottom: 40px; font-size: 2.5rem; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,215,0,0.1);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px); border-color: rgba(255,215,0,0.3); }
+        .stat-card h3 { color: #aaa; font-size: 0.85rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-value { font-size: 2.5rem; color: #ffd700; font-weight: 700; }
+        .orders-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid rgba(255,215,0,0.1);
+        }
+        .orders-section h2 {
+            color: #ffd700;
+            margin-bottom: 25px;
+            border-bottom: 2px solid rgba(255,215,0,0.3);
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #00ff88;
+            background: rgba(0,255,136,0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .order-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffd700;
+            transition: all 0.3s;
+        }
+        .order-card:hover { background: rgba(0,0,0,0.3); }
+        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .order-id { font-weight: 700; color: #ffd700; font-size: 1.1rem; }
+        .order-status {
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-pending { background: #ff9800; color: #000; }
+        .status-preparing { background: #2196f3; color: #fff; }
+        .status-ready { background: #00ff88; color: #000; }
+        .status-delivered { background: #4caf50; color: #fff; }
+        .order-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        .order-items {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+        }
+        .order-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .status-update { display: flex; gap: 12px; margin-top: 20px; }
+        .status-select {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            border: 2px solid rgba(255,215,0,0.3);
+            font-family: 'Poppins', sans-serif;
+        }
+        .update-btn {
+            padding: 12px 24px;
+            background: #ffd700;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+        .update-btn:hover { transform: scale(1.05); }
+        .empty-state { text-align: center; padding: 60px 20px; color: #aaa; }
+        .logout-btn {
+            background: #ff4444;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover { background: #ff6666; }
+        .refresh-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            padding: 16px 28px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        .refresh-btn:hover { transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo"><span>👅</span><span>Admin Dashboard</span></div>
+            <div class="nav-links">
+                <a href="admin-menu.html">Menu Management</a>
+                <a href="index.html">View Site</a>
+                <a href="login.html" class="logout-btn" onclick="sessionStorage.clear()">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>👅 Order Management</h1>
+        
+        <div class="stats-grid">
+            <div class="stat-card"><h3>Total Orders</h3><div class="stat-value" id="totalOrders">0</div></div>
+            <div class="stat-card"><h3>Pending</h3><div class="stat-value" id="pendingOrders">0</div></div>
+            <div class="stat-card"><h3>Preparing</h3><div class="stat-value" id="preparingOrders">0</div></div>
+            <div class="stat-card"><h3>Today's Revenue</h3><div class="stat-value" id="todayRevenue">$0</div></div>
+        </div>
+
+        <div class="orders-section">
+            <h2>
+                Recent Orders
+                <span class="live-indicator"><span class="live-dot"></span><span>LIVE</span></span>
+            </h2>
+            <div id="ordersList"><div class="empty-state">Loading orders...</div></div>
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="loadOrders()">🔄 Refresh</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="js/supabase-config.js"></script>
+    <script>
+        let ordersSubscription = null;
+
+        if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('supabase-ready', () => {
+            loadOrders();
+            setupRealtime();
+        });
+        document.addEventListener('DOMContentLoaded', initSupabase);
+
+        async function loadOrders() {
+            try {
+                const { data: orders, error } = await supabaseClient
+                    .from('orders')
+                    .select('*, order_items(*)')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!orders || orders.length === 0) {
+                    document.getElementById('ordersList').innerHTML = '<div class="empty-state">No orders yet</div>';
+                    updateStats([]);
+                    return;
+                }
+
+                displayOrders(orders);
+                updateStats(orders);
+            } catch (err) {
+                console.error('Error loading orders:', err);
+                document.getElementById('ordersList').innerHTML = '<div class="empty-state">Error loading orders. Please refresh.</div>';
+            }
+        }
+
+        function updateStats(orders) {
+            const total = orders.length;
+            const pending = orders.filter(o => o.status === 'pending').length;
+            const preparing = orders.filter(o => o.status === 'preparing').length;
+            
+            const today = new Date().toDateString();
+            const todayRevenue = orders
+                .filter(o => o.created_at && new Date(o.created_at).toDateString() === today)
+                .reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
+
+            document.getElementById('totalOrders').textContent = total;
+            document.getElementById('pendingOrders').textContent = pending;
+            document.getElementById('preparingOrders').textContent = preparing;
+            document.getElementById('todayRevenue').textContent = formatCurrency(todayRevenue);
+        }
+
+        function displayOrders(orders) {
+            const container = document.getElementById('ordersList');
+            container.innerHTML = orders.map(order => {
+                const status = order.status || 'pending';
+                const statusClass = `status-${status}`;
+                
+                let itemsHtml = '';
+                if (order.order_items) {
+                    order.order_items.forEach(item => {
+                        itemsHtml += `
+                            <div class="order-item">
+                                <span>${item.item_name} x${item.quantity}</span>
+                                <span>${formatCurrency(item.price * item.quantity)}</span>
+                            </div>`;
+                    });
+                }
+
+                const date = order.created_at ? new Date(order.created_at).toLocaleString() : 'Just now';
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span class="order-id">${order.order_code}</span>
+                            <span class="order-status ${statusClass}">${status}</span>
+                        </div>
+                        <div class="order-details">
+                            <div>
+                                <strong>Customer:</strong> ${order.customer_name || 'N/A'}<br>
+                                <strong>Phone:</strong> ${order.customer_phone || 'N/A'}
+                            </div>
+                            <div>
+                                <strong>Email:</strong> ${order.customer_email || 'N/A'}<br>
+                                <strong>Date:</strong> ${date}
+                            </div>
+                        </div>
+                        <div class="order-items">
+                            ${itemsHtml}
+                            <div class="order-item" style="border-top: 2px solid #ffd700; margin-top: 10px; padding-top: 10px;">
+                                <span><strong>Total</strong></span>
+                                <span style="color: #ffd700; font-weight: 700;">${formatCurrency(order.total)}</span>
+                            </div>
+                        </div>
+                        <div class="status-update">
+                            <select class="status-select" id="status-${order.id}">
+                                <option value="pending" ${status === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="preparing" ${status === 'preparing' ? 'selected' : ''}>Preparing</option>
+                                <option value="ready" ${status === 'ready' ? 'selected' : ''}>Ready</option>
+                                <option value="delivered" ${status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                            </select>
+                            <button class="update-btn" onclick="updateStatus('${order.id}')">Update Status</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function updateStatus(orderId) {
+            const select = document.getElementById(`status-${orderId}`);
+            const newStatus = select.value;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('orders')
+                    .update({ status: newStatus })
+                    .eq('id', orderId);
+                    
+                if (error) throw error;
+                showToast(`Order updated to ${newStatus}`);
+            } catch (err) {
+                console.error('Update error:', err);
+                alert('Failed to update status');
+            }
+        }
+
+        function setupRealtime() {
+            ordersSubscription = supabaseClient
+                .channel('admin_orders')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, payload => {
+                    console.log('Order change:', payload);
+                    loadOrders();
+                })
+                .subscribe();
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (ordersSubscription) ordersSubscription.unsubscribe();
+        });
+    </script>
+</body>
+</html>

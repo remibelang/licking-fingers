@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order | Licking Fingers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        header {
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+        }
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            color: #ffd700;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { color: #fff; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: #ffd700; }
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        h1 { text-align: center; color: #ffd700; margin-bottom: 40px; font-size: 2.5rem; }
+        .search-box {
+            background: rgba(255,255,255,0.05);
+            padding: 35px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,215,0,0.1);
+        }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 10px; color: #ffd700; font-weight: 600; }
+        input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid rgba(255,215,0,0.2);
+            border-radius: 12px;
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+        }
+        input:focus { outline: none; border-color: #ffd700; }
+        .track-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .track-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,215,0,0.3); }
+        .order-status {
+            background: rgba(255,255,255,0.05);
+            padding: 35px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,215,0,0.1);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .status-header { text-align: center; margin-bottom: 35px; }
+        .status-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        .status-pending { background: #ff9800; color: #000; }
+        .status-preparing { background: #2196f3; color: #fff; }
+        .status-ready { background: #00ff88; color: #000; }
+        .status-delivered { background: #4caf50; color: #fff; }
+        .progress-tracker {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+            position: relative;
+        }
+        .progress-tracker::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            z-index: 0;
+        }
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            height: 4px;
+            background: linear-gradient(90deg, #ffd700, #00ff88);
+            z-index: 0;
+            transition: width 0.5s ease;
+        }
+        .progress-step {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+        .step-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 3px solid rgba(255,255,255,0.2);
+            transition: all 0.4s;
+        }
+        .step-icon.active {
+            background: #ffd700;
+            border-color: #ffd700;
+            color: #1a1a2e;
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+        .step-icon.completed {
+            background: #00ff88;
+            border-color: #00ff88;
+            color: #1a1a2e;
+        }
+        .step-label { font-size: 0.8rem; color: #aaa; transition: color 0.3s; }
+        .step-label.active { color: #ffd700; font-weight: 700; }
+        .step-label.completed { color: #00ff88; }
+        .order-details { margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .error-message {
+            background: rgba(255,0,0,0.15);
+            border: 1px solid #ff4444;
+            color: #ff6666;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            display: none;
+        }
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #00ff88;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            background: rgba(0,255,136,0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">👅 Licking Fingers</a>
+            <div class="nav-links">
+                <a href="index.html">Menu</a>
+                <a href="track-order.html">Track Order</a>
+                <a href="login.html">Admin</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Track Your Order</h1>
+        
+        <div class="search-box">
+            <div class="form-group">
+                <label for="orderId">Enter your Order ID</label>
+                <input type="text" id="orderId" placeholder="e.g., LF-ABC123-DEF456">
+            </div>
+            <button class="track-btn" onclick="trackOrder()">Track Order</button>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="order-status" id="orderStatus"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="js/supabase-config.js"></script>
+    <script>
+        let orderSubscription = null;
+
+        document.addEventListener('supabase-ready', () => {
+            const orderId = getUrlParam('order_id');
+            if (orderId) {
+                document.getElementById('orderId').value = orderId;
+                trackOrder();
+            }
+        });
+        document.addEventListener('DOMContentLoaded', initSupabase);
+
+        function getUrlParam(param) {
+            return new URLSearchParams(window.location.search).get(param);
+        }
+
+        async function trackOrder() {
+            const orderCode = document.getElementById('orderId').value.trim();
+            const errorDiv = document.getElementById('errorMessage');
+            const statusDiv = document.getElementById('orderStatus');
+
+            if (orderSubscription) {
+                orderSubscription.unsubscribe();
+                orderSubscription = null;
+            }
+
+            if (!orderCode) {
+                errorDiv.textContent = 'Please enter an Order ID';
+                errorDiv.style.display = 'block';
+                statusDiv.style.display = 'none';
+                return;
+            }
+
+            errorDiv.style.display = 'none';
+
+            try {
+                const { data: orders, error } = await supabaseClient
+                    .from('orders')
+                    .select('*, order_items(*)')
+                    .eq('order_code', orderCode);
+
+                if (error) throw error;
+                if (!orders || orders.length === 0) {
+                    errorDiv.textContent = 'Order not found. Please check your Order ID.';
+                    errorDiv.style.display = 'block';
+                    statusDiv.style.display = 'none';
+                    return;
+                }
+
+                displayOrderStatus(orders[0]);
+
+                orderSubscription = supabaseClient
+                    .channel('order_tracking')
+                    .on('postgres_changes', {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'orders',
+                        filter: `order_code=eq.${orderCode}`
+                    }, payload => {
+                        console.log('Order updated:', payload);
+                        displayOrderStatus(payload.new);
+                        showToast(`Order status updated to: ${payload.new.status}`);
+                    })
+                    .subscribe();
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorDiv.textContent = 'Error tracking order. Please try again.';
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        function displayOrderStatus(order) {
+            const statusDiv = document.getElementById('orderStatus');
+            const status = order.status || 'pending';
+            
+            const steps = [
+                { key: 'pending', label: 'Order Placed', icon: '📝' },
+                { key: 'preparing', label: 'Preparing', icon: '👨‍🍳' },
+                { key: 'ready', label: 'Ready', icon: '✅' },
+                { key: 'delivered', label: 'Delivered', icon: '🚚' }
+            ];
+
+            let currentIndex = steps.findIndex(s => s.key === status);
+            if (currentIndex === -1) currentIndex = 0;
+
+            const progressPercent = currentIndex === 0 ? 0 : (currentIndex / (steps.length - 1)) * 80 + 10;
+
+            let stepsHtml = '<div class="progress-tracker">';
+            stepsHtml += `<div class="progress-line" style="width: ${progressPercent}%; left: 10%;"></div>`;
+            
+            steps.forEach((step, index) => {
+                let stepClass = '';
+                if (index < currentIndex) stepClass = 'completed';
+                else if (index === currentIndex) stepClass = 'active';
+                
+                stepsHtml += `
+                    <div class="progress-step">
+                        <div class="step-icon ${stepClass}">${step.icon}</div>
+                        <div class="step-label ${stepClass}">${step.label}</div>
+                    </div>
+                `;
+            });
+            stepsHtml += '</div>';
+
+            const statusClass = `status-${status}`;
+            const date = order.created_at ? new Date(order.created_at).toLocaleString() : 'Just now';
+
+            statusDiv.innerHTML = `
+                <div class="status-header">
+                    <h2 style="color: #ffd700; font-size: 1.8rem;">Order ${order.order_code}</h2>
+                    <div class="status-badge ${statusClass}">${status}</div>
+                    <div class="live-indicator">
+                        <span class="live-dot"></span>
+                        <span>LIVE UPDATES ENABLED</span>
+                    </div>
+                    <p style="margin-top: 15px; color: #aaa; font-size: 0.9rem;">Placed on ${date}</p>
+                </div>
+                
+                ${stepsHtml}
+                
+                <div class="order-details">
+                    <h3 style="color: #ffd700; margin-bottom: 15px;">Order Details</h3>
+                    <div class="detail-row"><span>Customer</span><span>${order.customer_name || 'N/A'}</span></div>
+                    <div class="detail-row"><span>Total Amount</span><span style="color: #ffd700; font-weight: 700;">${formatCurrency(order.total)}</span></div>
+                    <div class="detail-row"><span>Payment Method</span><span>${(order.payment_method || 'N/A').toUpperCase()}</span></div>
+                    <div class="detail-row"><span>Items</span><span>${order.order_items ? order.order_items.length : 0}</span></div>
+                </div>
+            `;
+            
+            statusDiv.style.display = 'block';
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (orderSubscription) orderSubscription.unsubscribe();
+        });
+    </script>
+</body>
+</html>

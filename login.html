@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Licking Fingers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-container {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,215,0,0.2);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .logo { font-size: 3.5rem; margin-bottom: 10px; }
+        h1 { color: #ffd700; margin-bottom: 8px; font-size: 1.8rem; }
+        .tagline { color: #aaa; margin-bottom: 35px; font-size: 0.95rem; }
+        .form-group { margin-bottom: 22px; text-align: left; }
+        label { display: block; margin-bottom: 8px; color: #ffd700; font-weight: 600; font-size: 0.9rem; }
+        input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid rgba(255,215,0,0.2);
+            border-radius: 12px;
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+        input:focus { outline: none; border-color: #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.2); }
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,215,0,0.3); }
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { color: #ffd700; }
+        .error-message {
+            background: rgba(255,0,0,0.15);
+            border: 1px solid #ff4444;
+            color: #ff6666;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+        }
+        .secure-badge {
+            margin-top: 25px;
+            padding: 12px;
+            background: rgba(0,255,136,0.1);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: #00ff88;
+            border: 1px solid rgba(0,255,136,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">👅</div>
+        <h1>Licking Fingers</h1>
+        <p class="tagline">Staff Only - Authorized Access</p>
+        
+        <div class="error-message" id="errorMessage"></div>
+
+        <form id="loginForm" onsubmit="return false;">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter staff username" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter staff password" required autocomplete="current-password">
+            </div>
+            <button class="login-btn" onclick="login()">Login to Dashboard</button>
+        </form>
+
+        <a href="index.html" class="back-link">← Back to Customer Site</a>
+
+        <div class="secure-badge">🔒 Secure Staff Portal</div>
+    </div>
+
+    <script>
+        const ADMIN_USERNAME = 'admin';
+        const ADMIN_PASSWORD = 'admin123';
+
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                sessionStorage.setItem('adminLoginTime', Date.now());
+                window.location.href = 'admin.html';
+            } else {
+                errorDiv.textContent = 'Invalid credentials. Staff access only.';
+                errorDiv.style.display = 'block';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') login();
+        });
+
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+            const loginTime = parseInt(sessionStorage.getItem('adminLoginTime') || 0);
+            if (Date.now() - loginTime < 2 * 60 * 60 * 1000) {
+                window.location.href = 'admin.html';
+            } else {
+                sessionStorage.removeItem('adminLoggedIn');
+                sessionStorage.removeItem('adminLoginTime');
+            }
+        }
+    </script>
+</body>
+</html>

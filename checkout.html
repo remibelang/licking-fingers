@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Licking Fingers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            color: #ffd700;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        @media (max-width: 768px) { .checkout-grid { grid-template-columns: 1fr; } }
+        .section {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,215,0,0.1);
+        }
+        .section h2 {
+            color: #ffd700;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid rgba(255,215,0,0.3);
+            padding-bottom: 10px;
+        }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #ffd700;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid rgba(255,215,0,0.2);
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255,215,0,0.2);
+        }
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .payment-method {
+            flex: 1;
+            min-width: 120px;
+            padding: 20px 15px;
+            border: 2px solid rgba(255,215,0,0.2);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(0,0,0,0.2);
+        }
+        .payment-method:hover, .payment-method.active {
+            border-color: #ffd700;
+            background: rgba(255,215,0,0.1);
+            transform: translateY(-2px);
+        }
+        .payment-method .icon { font-size: 2rem; margin-bottom: 8px; }
+        .order-summary {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .order-item:last-child { border-bottom: none; }
+        .item-details { display: flex; align-items: center; gap: 15px; }
+        .item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid #ffd700;
+        }
+        .total-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ffd700;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .total-row.final {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        .place-order-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .place-order-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+        }
+        .place-order-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .error-message {
+            background: rgba(255,0,0,0.15);
+            border: 1px solid #ff4444;
+            color: #ff6666;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .success-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            flex-direction: column;
+        }
+        .success-overlay.show { display: flex; }
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: scaleIn 0.5s ease;
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👅 Secure Checkout</h1>
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="checkout-grid">
+            <div class="section">
+                <h2>Customer Information</h2>
+                <form id="checkoutForm">
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" required placeholder="(302) 555-0123">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Delivery Address *</label>
+                        <textarea id="address" rows="3" required placeholder="Enter your full address..."></textarea>
+                    </div>
+
+                    <h2 style="margin-top: 30px;">Payment Method</h2>
+                    <div class="payment-methods">
+                        <div class="payment-method active" data-method="cod">
+                            <div class="icon">💵</div>
+                            <div>Cash on Delivery</div>
+                        </div>
+                        <div class="payment-method" data-method="card">
+                            <div class="icon">💳</div>
+                            <div>Card</div>
+                        </div>
+                        <div class="payment-method" data-method="cashapp">
+                            <div class="icon">📱</div>
+                            <div>Cash App</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="section">
+                <h2>Order Summary</h2>
+                <div class="order-summary" id="orderSummary"></div>
+                <div class="total-section">
+                    <div class="total-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+                    <div class="total-row"><span>Tax (8%)</span><span id="tax">$0.00</span></div>
+                    <div class="total-row"><span>Delivery</span><span>$5.00</span></div>
+                    <div class="total-row final"><span>Total</span><span id="total">$0.00</span></div>
+                </div>
+                <button class="place-order-btn" onclick="placeOrder()" id="placeOrderBtn">Place Order</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-icon">✅</div>
+        <h2 style="color: #00ff88; margin-bottom: 10px;">Order Placed!</h2>
+        <p style="color: #aaa;">Redirecting to confirmation...</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="js/supabase-config.js"></script>
+    <script>
+        let selectedPayment = 'cod';
+        let cart = [];
+
+        document.addEventListener('supabase-ready', loadCart);
+        document.addEventListener('DOMContentLoaded', initSupabase);
+
+        function loadCart() {
+            cart = JSON.parse(localStorage.getItem('cart')) || [];
+            renderOrderSummary();
+        }
+
+        function renderOrderSummary() {
+            const container = document.getElementById('orderSummary');
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #aaa;">Your cart is empty</p>';
+                updateTotals(0);
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                html += `
+                    <div class="order-item">
+                        <div class="item-details">
+                            <img src="${item.image || 'https://via.placeholder.com/60x60/1a1a3e/ffd700?text=🍽️'}" class="item-image">
+                            <div>
+                                <h4 style="color: #ffd700;">${item.name}</h4>
+                                <p style="font-size: 0.85rem; color: #aaa;">Qty: ${item.quantity} × ${formatCurrency(item.price)}</p>
+                            </div>
+                        </div>
+                        <div style="font-weight: 700; color: #00ff88;">${formatCurrency(itemTotal)}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            updateTotals(subtotal);
+        }
+
+        function updateTotals(subtotal) {
+            const tax = subtotal * 0.08;
+            const delivery = 5.00;
+            const total = subtotal + tax + delivery;
+            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('tax').textContent = formatCurrency(tax);
+            document.getElementById('total').textContent = formatCurrency(total);
+        }
+
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+                this.classList.add('active');
+                selectedPayment = this.dataset.method;
+            });
+        });
+
+        async function placeOrder() {
+            const btn = document.getElementById('placeOrderBtn');
+            const errorDiv = document.getElementById('errorMessage');
+
+            try {
+                const fullName = document.getElementById('fullName').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const address = document.getElementById('address').value.trim();
+
+                if (!fullName || !phone || !address) {
+                    showError('Please fill in all required fields');
+                    return;
+                }
+                if (cart.length === 0) {
+                    showError('Your cart is empty');
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.textContent = 'Processing...';
+
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const tax = subtotal * 0.08;
+                const delivery = 5.00;
+                const total = subtotal + tax + delivery;
+                const orderCode = generateOrderCode();
+
+                const { data: order, error: orderError } = await supabaseClient
+                    .from('orders')
+                    .insert({
+                        order_code: orderCode,
+                        customer_name: fullName,
+                        customer_email: email,
+                        customer_phone: phone,
+                        customer_address: address,
+                        status: 'pending',
+                        payment_method: selectedPayment,
+                        subtotal,
+                        tax,
+                        delivery,
+                        total
+                    })
+                    .select()
+                    .single();
+
+                if (orderError) throw orderError;
+
+                const orderItems = cart.map(item => ({
+                    order_id: order.id,
+                    menu_item_id: item.id,
+                    item_name: item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                }));
+
+                const { error: itemsError } = await supabaseClient
+                    .from('order_items')
+                    .insert(orderItems);
+
+                if (itemsError) throw itemsError;
+
+                localStorage.removeItem('cart');
+                cart = [];
+
+                document.getElementById('successOverlay').classList.add('show');
+                setTimeout(() => {
+                    window.location.href = `order-confirmation.html?order_id=${orderCode}`;
+                }, 2000);
+
+            } catch (error) {
+                console.error('Place order error:', error);
+                showError('Failed to place order: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = 'Place Order';
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => errorDiv.style.display = 'none', 5000);
+        }
+    </script>
+</body>
+</html>
