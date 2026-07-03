@@ -1,23 +1,22 @@
 // ============================================
 // SUPABASE CONFIGURATION - Licking Fingers
+// New Project: hejqkxwtdpbguymshxmq
 // ============================================
 
-const SUPABASE_URL = 'https://wbbsxfoztegjokbnsemq.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndiYnN4Zm96dGVnam9rYm5zZW1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU2ODk0MzAsImV4cCI6MjA1MTI2NTQzMH0.utWMF5ctdmY5ENFan1Bkmg_4CKIz8Q1';
+const SUPABASE_URL = 'https://hejqkxwtdpbguymshxmq.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_CKoBtZ4r3Bqkr8mOfOyTig_Q58ZS_YO';
 
-// Initialize Supabase client after DOM is ready
+// Initialize Supabase client
 function initSupabase() {
     if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
         window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('Supabase client initialized');
+        console.log('Supabase client initialized for Licking Fingers');
         return true;
     }
     return false;
 }
 
-// Try immediately
 if (!initSupabase()) {
-    // Retry after library loads
     window.addEventListener('load', () => {
         setTimeout(initSupabase, 300);
     });
