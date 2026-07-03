@@ -3,448 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orders Management - Licking Fingers</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/admin.css">
+    <title>Orders | Licking Fingers Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: rgba(0,0,0,0.4);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,215,0,0.2);
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            color: #ffd700;
+            font-weight: 700;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: #ffd700; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            color: #ffd700;
+            margin-bottom: 2rem;
+        }
+
+        .orders-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .order-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .order-id {
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        .order-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-pending { background: rgba(255,170,0,0.2); color: #ffaa00; }
+        .status-preparing { background: rgba(0,150,255,0.2); color: #0096ff; }
+        .status-ready { background: rgba(0,255,136,0.2); color: #00ff88; }
+        .status-delivered { background: rgba(100,100,100,0.2); color: #aaa; }
+
+        .order-details p {
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .order-total {
+            color: #00ff88;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 1rem;
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 3rem;
+            opacity: 0.6;
+        }
+    </style>
 </head>
-<body class="admin-body">
-    <!-- Admin Sidebar -->
-    <aside class="admin-sidebar">
-        <div class="sidebar-header">
-            <img src="assets/logo.png" alt="Licking Fingers" class="sidebar-logo">
-            <h3>Admin Panel</h3>
+<body>
+
+    <nav>
+        <div class="logo">👅 Licking Fingers Admin</div>
+        <div class="nav-links">
+            <a href="admin-menu.html">Menu</a>
+            <a href="admin-orders.html">Orders</a>
+            <a href="#" onclick="logout()">Logout</a>
         </div>
-        <nav class="sidebar-nav">
-            <a href="admin.html" class="nav-item">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="admin-menu.html" class="nav-item">
-                <i class="fas fa-utensils"></i>
-                <span>Menu</span>
-            </a>
-            <a href="admin-orders.html" class="nav-item active">
-                <i class="fas fa-shopping-bag"></i>
-                <span>Orders</span>
-            </a>
-            <a href="index.html" class="nav-item" target="_blank">
-                <i class="fas fa-external-link-alt"></i>
-                <span>View Site</span>
-            </a>
-        </nav>
-        <div class="sidebar-footer">
-            <button id="logoutBtn" class="btn-logout">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </button>
-        </div>
-    </aside>
+    </nav>
 
-    <!-- Main Content -->
-    <main class="admin-main">
-        <header class="admin-header">
-            <h1>Orders Management</h1>
-            <div class="admin-user">
-                <span id="adminName">Admin</span>
-                <i class="fas fa-user-circle"></i>
-            </div>
-        </header>
-
-        <div class="admin-content">
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon pending">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="pendingCount">0</h3>
-                        <p>Pending</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon preparing">
-                        <i class="fas fa-fire"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="preparingCount">0</h3>
-                        <p>Preparing</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon ready">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="readyCount">0</h3>
-                        <p>Ready</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon delivered">
-                        <i class="fas fa-motorcycle"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="deliveredCount">0</h3>
-                        <p>Delivered</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Orders Filter -->
-            <div class="filter-bar">
-                <div class="filter-group">
-                    <label>Status:</label>
-                    <select id="statusFilter">
-                        <option value="">All Orders</option>
-                        <option value="pending">Pending</option>
-                        <option value="preparing">Preparing</option>
-                        <option value="ready">Ready for Pickup</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Date:</label>
-                    <input type="date" id="dateFilter">
-                </div>
-                <div class="filter-group search-group">
-                    <input type="text" id="searchOrders" placeholder="Search by order #, name, or phone...">
-                    <button class="btn btn-primary" onclick="loadOrders()">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Orders Table -->
-            <div class="orders-table-container">
-                <table class="orders-table">
-                    <thead>
-                        <tr>
-                            <th>Order #</th>
-                            <th>Customer</th>
-                            <th>Items</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Time</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ordersTableBody">
-                        <tr>
-                            <td colspan="7" class="loading-cell">
-                                <i class="fas fa-spinner fa-spin"></i> Loading orders...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
-
-    <!-- Order Detail Modal -->
-    <div id="orderModal" class="modal">
-        <div class="modal-content modal-large">
-            <div class="modal-header">
-                <h3>Order Details <span id="modalOrderId"></span></h3>
-                <button class="btn-close" onclick="closeOrderModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Dynamic content -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeOrderModal()">Close</button>
-            </div>
+    <div class="container">
+        <h1>Orders</h1>
+        <div id="ordersList" class="orders-grid">
+            <p class="no-orders">Loading orders...</p>
         </div>
     </div>
 
-    <!-- Toast -->
-    <div id="toast" class="toast"></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script>
-        let ordersData = [];
-        let realtimeSubscription = null;
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                document.getElementById('adminName').textContent = user.email.split('@')[0];
-            }
-
-            loadOrders();
-            setupRealtimeSubscription();
-        });
-
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            await supabase.auth.signOut();
-            window.location.href = 'login.html';
-        });
+        // Check admin login
+        if (!localStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'admin-login.html';
+        }
 
         async function loadOrders() {
-            const tbody = document.getElementById('ordersTableBody');
-            tbody.innerHTML = '<tr><td colspan="7" class="loading-cell"><i class="fas fa-spinner fa-spin"></i> Loading orders...</td></tr>';
-
+            const container = document.getElementById('ordersList');
+            
             try {
-                let query = supabase
+                const { data: orders, error } = await window.supabaseClient
                     .from('orders')
-                    .select('*, order_items(*, menu_items(name))')
+                    .select('*')
                     .order('created_at', { ascending: false });
 
-                const statusFilter = document.getElementById('statusFilter').value;
-                if (statusFilter) {
-                    query = query.eq('status', statusFilter);
-                }
-
-                const dateFilter = document.getElementById('dateFilter').value;
-                if (dateFilter) {
-                    const start = new Date(dateFilter);
-                    const end = new Date(dateFilter);
-                    end.setDate(end.getDate() + 1);
-                    query = query.gte('created_at', start.toISOString()).lt('created_at', end.toISOString());
-                }
-
-                const { data: orders, error } = await query;
-
                 if (error) throw error;
 
-                ordersData = orders || [];
-                
-                // Apply search filter
-                const searchTerm = document.getElementById('searchOrders').value.toLowerCase();
-                if (searchTerm) {
-                    ordersData = ordersData.filter(order => 
-                        order.id.toString().includes(searchTerm) ||
-                        order.customer_name?.toLowerCase().includes(searchTerm) ||
-                        order.customer_phone?.includes(searchTerm)
-                    );
+                if (!orders || orders.length === 0) {
+                    container.innerHTML = '<p class="no-orders">No orders yet.</p>';
+                    return;
                 }
 
-                updateStats(orders || []);
-                renderOrdersTable(ordersData);
-            } catch (error) {
-                console.error('Error loading orders:', error);
-                tbody.innerHTML = '<tr><td colspan="7" class="error-cell"><i class="fas fa-exclamation-circle"></i> Error loading orders</td></tr>';
+                container.innerHTML = orders.map(order => `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span class="order-id">Order #${order.id}</span>
+                            <span class="order-status status-${order.status || 'pending'}">${order.status || 'Pending'}</span>
+                        </div>
+                        <div class="order-details">
+                            <p><strong>Customer:</strong> ${order.customer_name || 'N/A'}</p>
+                            <p><strong>Phone:</strong> ${order.customer_phone || 'N/A'}</p>
+                            <p><strong>Address:</strong> ${order.customer_address || 'N/A'}</p>
+                            <p><strong>Items:</strong> ${order.items || 'N/A'}</p>
+                            <div class="order-total">Total: $${parseFloat(order.total || 0).toFixed(2)}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                console.error('Error loading orders:', err);
+                container.innerHTML = '<p class="no-orders">Error loading orders.</p>';
             }
         }
 
-        function updateStats(orders) {
-            const stats = {
-                pending: 0,
-                preparing: 0,
-                ready: 0,
-                delivered: 0
-            };
-
-            orders.forEach(order => {
-                if (stats[order.status] !== undefined) {
-                    stats[order.status]++;
-                }
-            });
-
-            document.getElementById('pendingCount').textContent = stats.pending;
-            document.getElementById('preparingCount').textContent = stats.preparing;
-            document.getElementById('readyCount').textContent = stats.ready;
-            document.getElementById('deliveredCount').textContent = stats.delivered;
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'admin-login.html';
         }
 
-        function renderOrdersTable(orders) {
-            const tbody = document.getElementById('ordersTableBody');
-
-            if (orders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty-cell"><i class="fas fa-inbox"></i> No orders found</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = orders.map(order => {
-                const itemCount = order.order_items?.length || 0;
-                const statusClass = getStatusClass(order.status);
-                const timeAgo = getTimeAgo(order.created_at);
-
-                return `
-                    <tr>
-                        <td><strong>#${order.id.toString().padStart(4, '0')}</strong></td>
-                        <td>
-                            <div class="customer-info">
-                                <span class="customer-name">${order.customer_name || 'N/A'}</span>
-                                <span class="customer-phone">${order.customer_phone || ''}</span>
-                            </div>
-                        </td>
-                        <td>${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
-                        <td><strong>$${parseFloat(order.total).toFixed(2)}</strong></td>
-                        <td>
-                            <select class="status-select ${statusClass}" onchange="updateStatus('${order.id}', this.value)">
-                                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparing</option>
-                                <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Ready</option>
-                                <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                            </select>
-                        </td>
-                        <td>${timeAgo}</td>
-                        <td>
-                            <button class="btn btn-sm btn-view" onclick="viewOrderDetails('${order.id}')">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function getStatusClass(status) {
-            const classes = {
-                'pending': 'status-pending',
-                'preparing': 'status-preparing',
-                'ready': 'status-ready',
-                'delivered': 'status-delivered',
-                'cancelled': 'status-cancelled'
-            };
-            return classes[status] || '';
-        }
-
-        function getTimeAgo(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diff = Math.floor((now - date) / 1000);
-
-            if (diff < 60) return 'Just now';
-            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-            return `${Math.floor(diff / 86400)}d ago`;
-        }
-
-        async function updateStatus(orderId, newStatus) {
-            try {
-                const { error } = await supabase
-                    .from('orders')
-                    .update({ status: newStatus })
-                    .eq('id', orderId);
-
-                if (error) throw error;
-
-                showToast(`Order #${orderId} updated to ${newStatus}`, 'success');
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.supabaseClient) {
                 loadOrders();
-            } catch (error) {
-                console.error('Error updating status:', error);
-                showToast('Error updating status', 'error');
-            }
-        }
-
-        async function viewOrderDetails(orderId) {
-            const order = ordersData.find(o => o.id == orderId);
-            if (!order) return;
-
-            document.getElementById('modalOrderId').textContent = `#${order.id.toString().padStart(4, '0')}`;
-            
-            const itemsHtml = (order.order_items || []).map(item => `
-                <div class="order-item-row">
-                    <span>${item.menu_items?.name || 'Unknown Item'}</span>
-                    <span>x${item.quantity}</span>
-                    <span>$${(item.price_at_time * item.quantity).toFixed(2)}</span>
-                </div>
-            `).join('');
-
-            document.getElementById('modalBody').innerHTML = `
-                <div class="order-detail-grid">
-                    <div class="detail-section">
-                        <h4><i class="fas fa-user"></i> Customer Info</h4>
-                        <p><strong>Name:</strong> ${order.customer_name || 'N/A'}</p>
-                        <p><strong>Phone:</strong> ${order.customer_phone || 'N/A'}</p>
-                        <p><strong>Address:</strong> ${order.delivery_address || 'N/A'}</p>
-                    </div>
-                    <div class="detail-section">
-                        <h4><i class="fas fa-info-circle"></i> Order Info</h4>
-                        <p><strong>Status:</strong> <span class="status-badge ${getStatusClass(order.status)}">${order.status}</span></p>
-                        <p><strong>Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
-                        <p><strong>Payment:</strong> ${order.payment_method || 'Cash on Delivery'}</p>
-                    </div>
-                </div>
-                <div class="detail-section items-section">
-                    <h4><i class="fas fa-list"></i> Order Items</h4>
-                    ${itemsHtml || '<p>No items</p>'}
-                </div>
-                <div class="order-total-section">
-                    <div class="total-row">
-                        <span>Subtotal:</span>
-                        <span>$${parseFloat(order.subtotal || 0).toFixed(2)}</span>
-                    </div>
-                    <div class="total-row">
-                        <span>Tax (8%):</span>
-                        <span>$${parseFloat(order.tax || 0).toFixed(2)}</span>
-                    </div>
-                    <div class="total-row">
-                        <span>Delivery Fee:</span>
-                        <span>$${parseFloat(order.delivery_fee || 2.99).toFixed(2)}</span>
-                    </div>
-                    <div class="total-row grand-total">
-                        <span>Total:</span>
-                        <span>$${parseFloat(order.total).toFixed(2)}</span>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('orderModal').style.display = 'flex';
-        }
-
-        function closeOrderModal() {
-            document.getElementById('orderModal').style.display = 'none';
-        }
-
-        function setupRealtimeSubscription() {
-            realtimeSubscription = supabase
-                .channel('orders-channel')
-                .on('postgres_changes', 
-                    { event: '*', schema: 'public', table: 'orders' },
-                    (payload) => {
-                        showToast('New order update received!', 'info');
-                        loadOrders();
-                    }
-                )
-                .subscribe();
-        }
-
-        // Event listeners
-        document.getElementById('statusFilter').addEventListener('change', loadOrders);
-        document.getElementById('dateFilter').addEventListener('change', loadOrders);
-        document.getElementById('searchOrders').addEventListener('input', debounce(loadOrders, 300));
-
-        function debounce(func, wait) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
-
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = `toast ${type}`;
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 3000);
-        }
-
-        window.addEventListener('click', (e) => {
-            const modal = document.getElementById('orderModal');
-            if (e.target === modal) closeOrderModal();
-        });
-
-        window.addEventListener('beforeunload', () => {
-            if (realtimeSubscription) {
-                supabase.removeChannel(realtimeSubscription);
+            } else {
+                window.addEventListener('supabaseReady', loadOrders);
             }
         });
     </script>
+
 </body>
 </html>
