@@ -126,18 +126,59 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
     <script>
+        // ============================================
+        // SUPABASE CONFIG - INLINE FOR ADMIN
+        // ============================================
+        
+        const SUPABASE_URL = 'https://hejqkxwtdpbguymshxmq.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_CKoBtZ4r3Bqkr8mOfOyTig_Q58ZS_YO';
+        
+        let supabaseClient = null;
+        let initAttempts = 0;
+        const maxAttempts = 50;
+        
+        function tryInitSupabase() {
+            initAttempts++;
+            
+            if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('Supabase client created successfully');
+                window.dispatchEvent(new Event('supabaseReady'));
+                return true;
+            }
+            
+            if (initAttempts < maxAttempts) {
+                setTimeout(tryInitSupabase, 100);
+            }
+            return false;
+        }
+        
+        tryInitSupabase();
+    </script>
+    <script>
+        // ============================================
+        // ADMIN ORDERS
+        // ============================================
+
         // Check admin login
         if (!localStorage.getItem('adminLoggedIn')) {
             window.location.href = 'admin-login.html';
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            if (supabaseClient && typeof supabaseClient.from === 'function') {
+                loadOrders();
+            } else {
+                window.addEventListener('supabaseReady', loadOrders);
+            }
+        });
+
         async function loadOrders() {
             const container = document.getElementById('ordersList');
             
             try {
-                const { data: orders, error } = await window.supabaseClient
+                const { data: orders, error } = await supabaseClient
                     .from('orders')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -175,14 +216,6 @@
             localStorage.removeItem('adminLoggedIn');
             window.location.href = 'admin-login.html';
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.supabaseClient) {
-                loadOrders();
-            } else {
-                window.addEventListener('supabaseReady', loadOrders);
-            }
-        });
     </script>
 
 </body>
